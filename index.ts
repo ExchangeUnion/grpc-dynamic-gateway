@@ -1,4 +1,4 @@
-import grpc from 'grpc';
+import requiredGrpc from 'grpc';
 import express from 'express';
 import colors from 'chalk';
 import fs from 'fs';
@@ -17,10 +17,10 @@ const lowerFirstChar = str => str.charAt(0).toLowerCase() + str.slice(1);
  * @param include  Path to find all includes
  * @return Middleware
  */
-export const middleware = (protoFiles: string[], grpcLocation: string, credentials: grpc.ServerCredentials, include: string) => {
+const middleware = (protoFiles: string[], grpcLocation: string, credentials: requiredGrpc.ServerCredentials, include: string) => {
   const router = express.Router();
   const clients = {};
-  const protos = protoFiles.map(p => include ? grpc.load({ file: p, root: include }) : grpc.load(p));
+  const protos = protoFiles.map(p => include ? requiredGrpc.load({ file: p, root: include }) : requiredGrpc.load(p));
   protoFiles
     .map(p => `${include}/${p}`)
     .map(p => schema.parse(fs.readFileSync(p)))
@@ -38,7 +38,7 @@ export const middleware = (protoFiles: string[], grpcLocation: string, credentia
                 console.log(colors.green(httpMethod.toUpperCase()), colors.blue(m.options['google.api.http'][httpMethod]));
                 router[httpMethod](convertUrl(m.options['google.api.http'][httpMethod]), (req, res) => {
                   const params = convertParams(req, m.options['google.api.http'][httpMethod]);
-                  const meta = convertHeaders(req.headers, grpc);
+                  const meta = convertHeaders(req.headers, requiredGrpc);
                   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
                   try {
                     getPkg(clients, pkg, false)[svc][lowerFirstChar(m.name)](params, meta, (err, ans) => {
@@ -144,9 +144,19 @@ const getParamsList = (url: string): any => {
  * @param  headers Headers: {name: value}
  * @return grpc meta object
  */
-const convertHeaders = (headers: any, grpc: any): any => {
+const convertHeaders = (headers?: any, grpc?: any): any => {
+  grpc = grpc || requiredGrpc;
   const grpcheaders = headers || {};
   const metadata = new grpc.Metadata();
   Object.keys(grpcheaders).forEach((h) => { metadata.set(h, grpcheaders[h]); });
   return metadata;
+};
+
+export default middleware;
+export {
+  convertParams,
+  convertUrl,
+  convertBody,
+  getParamsList,
+  convertHeaders,
 };
