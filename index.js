@@ -15,11 +15,11 @@ const lowerFirstChar = str => str.charAt(0).toLowerCase() + str.slice(1);
  * generate middleware to proxy to gRPC defined by proto files
  * @param protoFiles Filenames of protobuf-file
  * @param grpcLocation HOST:PORT of gRPC server
- * @param gRPC credential context (default: grpc.credentials.createInsecure())
+ * @param credentials credential context (default: grpc.credentials.createInsecure())
  * @param include  Path to find all includes
  * @return Middleware
  */
-const middleware = (protoFiles, grpcLocation, credentials, include) => {
+const middleware = (protoFiles, grpcLocation, credentials = grpc_1.default.credentials.createInsecure(), include) => {
     const router = express_1.default.Router();
     const clients = {};
     const protos = protoFiles.map(p => include ? grpc_1.default.load({ file: p, root: include }) : grpc_1.default.load(p));
@@ -148,8 +148,7 @@ exports.getParamsList = getParamsList;
  * @param  headers Headers: {name: value}
  * @return grpc meta object
  */
-const convertHeaders = (headers, grpc) => {
-    grpc = grpc || grpc_1.default;
+const convertHeaders = (headers, grpc = grpc_1.default) => {
     const grpcheaders = headers || {};
     const metadata = new grpc.Metadata();
     Object.keys(grpcheaders).forEach((h) => { metadata.set(h, grpcheaders[h]); });

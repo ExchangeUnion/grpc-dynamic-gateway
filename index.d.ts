@@ -1,14 +1,14 @@
-import requiredGrpc from 'grpc';
+import importedGrpc from 'grpc';
 import express from 'express';
 /**
  * generate middleware to proxy to gRPC defined by proto files
  * @param protoFiles Filenames of protobuf-file
  * @param grpcLocation HOST:PORT of gRPC server
- * @param gRPC credential context (default: grpc.credentials.createInsecure())
+ * @param credentials credential context (default: grpc.credentials.createInsecure())
  * @param include  Path to find all includes
  * @return Middleware
  */
-declare const middleware: (protoFiles: string[], grpcLocation: string, credentials: requiredGrpc.ServerCredentials, include: string) => import("express-serve-static-core").Router;
+declare const middleware: (protoFiles: string[], grpcLocation: string, credentials?: importedGrpc.ServerCredentials, include?: string) => import("express-serve-static-core").Router;
 /**
  * Parse express request params & query into params for grpc client
  * @param req Express request object
@@ -40,6 +40,6 @@ declare const getParamsList: (url: string) => any;
  * @param  headers Headers: {name: value}
  * @return grpc meta object
  */
-declare const convertHeaders: (headers?: any, grpc?: any) => any;
+declare const convertHeaders: (headers?: any, grpc?: typeof importedGrpc) => any;
 export default middleware;
 export { convertParams, convertUrl, convertBody, getParamsList, convertHeaders, };

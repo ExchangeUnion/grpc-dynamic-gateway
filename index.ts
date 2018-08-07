@@ -1,4 +1,4 @@
-import requiredGrpc from 'grpc';
+import importedGrpc from 'grpc';
 import express from 'express';
 import colors from 'chalk';
 import fs from 'fs';
@@ -13,14 +13,14 @@ const lowerFirstChar = str => str.charAt(0).toLowerCase() + str.slice(1);
  * generate middleware to proxy to gRPC defined by proto files
  * @param protoFiles Filenames of protobuf-file
  * @param grpcLocation HOST:PORT of gRPC server
- * @param gRPC credential context (default: grpc.credentials.createInsecure())
+ * @param credentials credential context (default: grpc.credentials.createInsecure())
  * @param include  Path to find all includes
  * @return Middleware
  */
-const middleware = (protoFiles: string[], grpcLocation: string, credentials: requiredGrpc.ServerCredentials, include: string) => {
+const middleware = (protoFiles: string[], grpcLocation: string, credentials: importedGrpc.ServerCredentials = importedGrpc.credentials.createInsecure(), include?: string) => {
   const router = express.Router();
   const clients = {};
-  const protos = protoFiles.map(p => include ? requiredGrpc.load({ file: p, root: include }) : requiredGrpc.load(p));
+  const protos = protoFiles.map(p => include ? importedGrpc.load({ file: p, root: include }) : importedGrpc.load(p));
   protoFiles
     .map(p => `${include}/${p}`)
     .map(p => schema.parse(fs.readFileSync(p)))
@@ -38,7 +38,7 @@ const middleware = (protoFiles: string[], grpcLocation: string, credentials: req
                 console.log(colors.green(httpMethod.toUpperCase()), colors.blue(m.options['google.api.http'][httpMethod]));
                 router[httpMethod](convertUrl(m.options['google.api.http'][httpMethod]), (req, res) => {
                   const params = convertParams(req, m.options['google.api.http'][httpMethod]);
-                  const meta = convertHeaders(req.headers, requiredGrpc);
+                  const meta = convertHeaders(req.headers, importedGrpc);
                   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
                   try {
                     getPkg(clients, pkg, false)[svc][lowerFirstChar(m.name)](params, meta, (err, ans) => {
@@ -144,8 +144,7 @@ const getParamsList = (url: string): any => {
  * @param  headers Headers: {name: value}
  * @return grpc meta object
  */
-const convertHeaders = (headers?: any, grpc?: any): any => {
-  grpc = grpc || requiredGrpc;
+const convertHeaders = (headers?: any, grpc = importedGrpc): any => {
   const grpcheaders = headers || {};
   const metadata = new grpc.Metadata();
   Object.keys(grpcheaders).forEach((h) => { metadata.set(h, grpcheaders[h]); });
