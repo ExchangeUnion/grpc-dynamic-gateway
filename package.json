@@ -9,6 +9,7 @@
   },
   "scripts": {
     "compile": "tsc",
+    "prepublishOnly": "npm run compile",
     "test": "jest --notify --coverage",
     "test:update": "npm test -- --updateSnapshot",
     "test:watch": "npm test -- --watch",
@@ -36,6 +37,14 @@
     "url": "https://github.com/konsumer/grpc-dynamic-gateway/issues"
   },
   "homepage": "https://github.com/konsumer/grpc-dynamic-gateway#readme",
+  "files": [
+    "cli.js",
+    "index.js",
+    "index.js.map",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "@types/express": "^4.16.0",
     "body-parser": "^1.18.2",
