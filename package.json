@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/konsumer/grpc-dynamic-gateway.git"
+    "url": "git+https://github.com/ExchangeUnion/grpc-dynamic-gateway.git"
   },
   "keywords": [
     "grpc",
@@ -34,9 +34,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/konsumer/grpc-dynamic-gateway/issues"
+    "url": "https://github.com/ExchangeUnion/grpc-dynamic-gateway/issues"
   },
-  "homepage": "https://github.com/konsumer/grpc-dynamic-gateway#readme",
+  "homepage": "https://github.com/ExchangeUnion/grpc-dynamic-gateway#readme",
   "files": [
     "cli.js",
     "index.js",
