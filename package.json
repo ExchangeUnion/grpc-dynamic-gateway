@@ -1,6 +1,6 @@
 {
   "name": "@exchangeunion/grpc-dynamic-gateway",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "description": "Like grpc-gateway, but written in node and dynamic.",
   "main": "index.js",
   "types": "index.d.ts",
